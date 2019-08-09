@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>OUR APP</title>
+  </head>
+  <body style="background-color: #a6a6a6">
+    <h1 class="text-center text-primary">OUR WEBSITE</h1>
+        <nav class="navbar navbar-dark bg-dark">
+                <button type="button" onclick="toogleLogo()" class="btn btn-primary font-weight-bold" style="width: 15%;">HOME</button>
+                <button type="button" onclick="showLogs()" class="btn btn-primary font-weight-bold" style="width: 15%;">LOGS</button>
+                <button type="button" onclick="showCommands()" class="btn btn-primary font-weight-bold" style="width: 15%;">COMMANDS</button>
+                <button type="button" onclick="randomStuff()" class="btn btn-primary font-weight-bold" style="width: 15%;">RANDOM STUFF</button>
+                <button type="button" onclick="showServerResources()" class="btn btn-primary font-weight-bold" style="width: 15%;">SERVER RESOURCES</button>
+        </nav>
+
+        <!--DONE-->
+        <div id="LA_Logo">
+                <img class="rounded mx-auto d-block" src="LA_Logo.png"/>
+        </div>
+   
+        <!--DONE-->
+        <div id="LOGS" style="display: none; margin-left: 10%; margin-right: 10%;">
+                <nav class="navbar navbar-dark bg-dark" style="margin-top: 10px;">
+                        <button type="button" onclick="getMessages(showMessages)" class="btn btn-primary font-weight-bold" style="width: 20%;">MESSAGES</button>
+                        <button type="button" onclick="getSecure(showSecure)" class="btn btn-primary font-weight-bold" style="width: 20%;">SECURE</button>
+                        <button type="button" onclick="getApacheAccessLog(showApacheAccessLog)" class="btn btn-primary font-weight-bold" style="width: 20%;">APACHE ACCESS LOG</button>
+                        <button type="button" onclick="getApacheErrorLog(showApacheErrorLog)" class="btn btn-primary font-weight-bold" style="width: 20%;">APACHE ERROR LOG</button>
+                </nav>
+                <div id="logDisplay" style="background-color: #000000; margin-top: 10px;">
+
+                </div>
+        </div>
+
+        <!--DONE-->
+        <div id="COMMANDS" style="display: none; margin-left: 10%; margin-right: 10%;">
+                <nav class="navbar navbar-dark bg-dark" style="margin-top: 10px;">
+                        <button type="button" onclick="getUsers(showUsers)" class="btn btn-primary font-weight-bold" style="width: 20%;">LOGGED IN USERS</button>
+                        <button type="button" onclick="getProcessList(showProcessList)" class="btn btn-primary font-weight-bold" style="width: 20%;">PROCESS LIST</button>
+                        <button type="button" onclick="getApacheVersion(showApacheVersion)" class="btn btn-primary font-weight-bold" style="width: 20%;">APACHE VERSION</button>
+                        <button type="button" onclick="getSrcPath(showSrcPath)" class="btn btn-primary font-weight-bold" style="width: 20%;">ACESS SRC IP - PATH</button>
+                </nav>
+                <div id="commandsDisplay" style="background-color: #000000; margin-top: 10px;">
+
+                </div>
+        </div>
+
+        <!--DONE-->
+        <div id="RANDOM_STUFF" style="display: none;"> 
+ 
+        </div>
+
+
+        <!--PENDING-->
+        <div id="SERVER_RESOURCES" style="display: none; margin-left: 10%; margin-right: 10%;">
+                <nav class="navbar navbar-dark bg-dark" style="margin-top: 10px;">
+                        <button type="button" onclick='getData(showData, "/disk_usage");' class="btn btn-primary font-weight-bold" style="width: 30%;">DISK USAGE</button>
+                        <button type="button" onclick='getData(showData, "/cpu_info");' class="btn btn-primary font-weight-bold" style="width: 30%;">CPU INFO</button>
+                        <button type="button" onclick='getData(showData, "/mem_virt_info");' class="btn btn-primary font-weight-bold" style="width: 30%;">MEM INFO</button>
+                </nav>
+
+                <nav class="navbar navbar-dark bg-dark">
+                        <button type="button" onclick="getConnections(showConnections)" class="btn btn-primary font-weight-bold" style="width: 30%; height: 40%">CONNECTIONS</button>
+                        <button type="button" onclick='getData(showData, "/network_traffic_all");' class="btn btn-primary font-weight-bold" style="width: 30%;">NETWORK TRAFFIC ALL</button>
+                        <button type="button" onclick='showInput("INPUT_IP_ADDRESS", "submitIP()", "ipAddr")' class="btn btn-primary font-weight-bold" style="width: 30%;">NETWORK TRAFFIC IP</button>
+                </nav>
+
+
+                <nav class="navbar navbar-dark bg-dark">
+                        <button type="button" onclick='showInput("INPUT_EXCLUDE_IP_ADDRESS", "submitExcludeIP()", "excludeIp")' class="btn btn-primary font-weight-bold" style="width: 30%;">NETWORK TRAFFIC EXCLUDE IP</button>
+                        <button type="button" onclick='showInput("INPUT_EXCLUDE_PORT", "submitExcludePort()", "excludePort")' class="btn btn-primary font-weight-bold" style="width: 30%;">NETWORK TRAFFIC EXCLUDE PORT</button>
+                        <button type="button" onclick='showInput("INPUT_PORT", "submitPort()", "Port")' class="btn btn-primary font-weight-bold" style="width: 30%;">NETWORK TRAFFIC PORT</button>
+
+                </nav>
+
+                <div id="inputDisplay" style="display: none; background-color: #000000; margin-top: 10px;">
+
+                </div>
+
+                <div id="resourceDisplay" style="background-color: #000000; margin-top: 10px;">
+
+                </div>
+        </div>
+
+
+         <script>
+                var base_url = 'http://167.71.39.61:5000';
+         
+                function submitPort() {
+
+                        inputVal = document.getElementById('Port').value;
+                        getData(showData, '/network_traffic_port?port=' + inputVal);
+
+                }
+
+                function submitExcludePort() {
+
+                        inputVal = document.getElementById('excludePort').value;
+                        getData(showData, '/network_traffic_exclude_port?port=' + inputVal);
+
+                }
+
+                function submitExcludeIP()  {
+
+                        inputVal = document.getElementById('excludeIp').value;
+                        getData(showData, '/network_traffic_exclude_ip?ip=' + inputVal);
+
+                }
+
+                function submitIP() {
+
+                        inputVal = document.getElementById('ipAddr').value;
+                        getData(showData, '/network_traffic_ip?ip=' + inputVal);
+
+                }
+
+                function showInput(placeholder, func, elId) {
+                        $("#resourceDisplay").show();
+                        
+                        var id = "resourceDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<div style="color: white;" class="form-group"> <input style="width: 80%; margin-left: 10%; margin-right:10%; text-align: center;" type="text" class="form-control" id=' + elId + ' placeholder=' + placeholder + '> <button onclick=' + func + ' style="width: 80%; margin-left: 10%; margin-right: 10%;" type="button" class="btn btn-primary font-weight-bold">SUBMIT</button></div>';
+                        console.log(placeholder, func, elId) 
+                        container.innerHTML = html;
+                }
+
+                function getData(callback, path) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + path;
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showData(response) {
+                        $("#resourceDisplay").show();
+                        
+                        var id = "resourceDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+
+                }
+
+                function getNetworkTrafficAll(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/network_traffic_all';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showNetworkTrafficAll(resource) {
+                        $("#resourceDisplay").show();
+                        
+                        var id = "resourceDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function getConnections(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/connections';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showConnections(response) {
+                        $("#resourceDisplay").show();
+                        
+                        var id = "resourceDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+
+                }
+
+                function showServerResources() {
+                        $("#LA_Logo").hide();
+                        $("#LOGS").hide();
+                        $("#COMMANDS").hide();
+                        $("#RANDOM_STUFF").hide();
+                        $("#SERVER_RESOURCES").show();
+                }
+
+                function getSrcPath(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/src_path';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showSrcPath(response) {
+                        $("#commandsDisplay").show();
+                        
+                        var id = "commandsDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function getApacheVersion(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/apache_version';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showApacheVersion(response) {
+                        $("#commandsDisplay").show();
+                        
+                        var id = "commandsDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function getProcessList(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/process_list';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showProcessList(response) {
+                        $("#commandsDisplay").show();
+                        
+                        var id = "commandsDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function getUsers(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/logged_in_users';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showUsers(response) {
+                        $("#commandsDisplay").show();
+                        
+                        var id = "commandsDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function showCommands() {
+                        $("#LA_Logo").hide();
+                        $("#LOGS").hide();
+                        $("#COMMANDS").show();
+                        $("#RANDOM_STUFF").hide();
+                        $("#SERVER_RESOURCES").hide();
+                }
+
+                function getApacheErrorLog(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/log_error_log';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+                 
+                function showApacheErrorLog(response) {
+                        $("#logDisplay").show();
+                        
+                        var id = "logDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+
+                }
+
+                function getApacheAccessLog(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url + '/log_access_log';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showApacheAccessLog(response) {
+                        $("#logDisplay").show();
+                        
+                        var id = "logDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+
+                }
+
+                function getSecure(callback) {
+                        var response;                   
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url  + '/log_secure';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);}
+                }
+
+                function showSecure(response) {
+
+                        $("#logDisplay").show();
+                        
+                        var id = "logDisplay";
+                        var container = document.getElementById(id);
+                        
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+ 
+                function getMessages(callback) {
+                        var response;
+
+                        const Http = new XMLHttpRequest();
+                        const url = base_url  + '/log_messages';
+                        Http.open('GET', url, true);
+                        Http.send();
+
+                        Http.onreadystatechange = function() {if(Http.readyState === 4 && Http.status === 200 && callback) callback(Http.response);} 
+                }
+
+                function showMessages(response) {
+                        $("#logDisplay").show();
+
+                        var id = "logDisplay";
+                        var container = document.getElementById(id);
+
+                        html = '<p style="color: white; margin-right: 10px; margin-left: 10px;">' + response + '</p>';
+                        container.innerHTML = html;
+                }
+
+                function showLogs() {
+                        $("#LA_Logo").hide();
+                        $("#LOGS").show();
+                        $("#COMMANDS").hide();
+                        $("#RANDOM_STUFF").hide();
+                        $("#SERVER_RESOURCES").hide();
+                }
+
+                function randomStuff() {
+                        $("#LA_Logo").hide();
+                        $("#LOGS").hide();
+                        $("#COMMANDS").hide();
+                        $("#RANDOM_STUFF").show();
+                        $("#SERVER_RESOURCES").hide();
+
+                        var vids = [
+                                '38yHCyvZgrQ',
+                                'WPhCwtjQQnU',
+                                'CIZkW9I7Zsk',
+                                'eq_uomblKo8',
+                                'D2HZ8PYcY-E',
+                                'luzWQS0xsXg',
+                                'CorBbxMekSA',
+                                'AJ_eM1lOEaw',
+                                '7d3SLIVnczc',
+                                'KlTuH9w0Ao0',
+                                'uewaM49nGU8',
+                                'Tk1t3WKK-ZY',
+                                'tWR1KXgEYxE',
+                                'Idaxh_UJso0',
+                                'b4yRVixc6H8',
+                                'nmR0bRbOIkk',
+                                'TDNJujcMlek',
+                                'aCC1O9hSzWo',
+                                'qmPR0swIr_M',
+                                'JoPvBm3TkdY',
+                                '7raku_Twlsw',
+                                '38yHCyvZgrQ'
+                         ];
+
+                        var id = "RANDOM_STUFF";
+                        var container = document.getElementById(id);
+                        html = '<iframe width="560" height="315" src="https://www.youtube.com/embed/"' + vids[Math.floor(Math.random() * vids.length)] + 'frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';       
+
+                        html_1 = '<iframe width="760" height="515" class="rounded mx-auto d-block" src="https://www.youtube.com/embed/';
+                        html_2 = vids[Math.floor(Math.random() * vids.length)];
+                        html_3 = '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                        html = html_1 + html_2 + html_3;
+                        container.innerHTML = html;
+                }
+
+
+                function toogleLogs() {
+                        $("#LA_Logo").hide();
+                        $("#LOGS").show();
+                        $("#COMMANDS").hide();
+                        $("#RANDOM_STUFF").hide();
+                        $("#SERVER_RESOURCES").hide();
+
+
+
+                }
+
+
+                var test = "true";
+                function toogleLogo() {
+                        $("#LA_Logo").show();
+                        $("#LOGS").hide();
+                        $("#COMMANDS").hide();
+                        $("#RANDOM_STUFF").hide();
+                        $("#SERVER_RESOURCES").hide();
+
+                        var id = "LA_Logo";
+                        if(test == "true") {
+                                var container = document.getElementById(id);
+                                container.innerHTML = "<img class=\"rounded mx-auto d-block\" src=\"LA_Logo.png\"/>";
+                                test = "false";
+                        } else {
+                                var container = document.getElementById(id);
+                                container.innerHTML = "<h1 class=\"text-center font-weight-bold text-danger\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-warning\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-success\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-secondary\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-info\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-dark\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-primary\">EMPTY</h1> <h1 class=\"text-center font-weight-bold text-danger\">EMPTY</h1>"
+
+                                test = "true";
+                        }
+                }
+
+                function hideDivs() {
+                        $("#LOGS").show();
+                        $("#LA_Logo").hide();
+                }
+        </script>
+
+
+
+ 
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
