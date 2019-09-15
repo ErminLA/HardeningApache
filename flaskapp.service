@@ -1,0 +1,15 @@
+[Unit]
+Description=API_Backend
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/cloud_user/Backend
+Environment=FLASK_ENV=development
+Environment=FLASK_APP=/home/cloud_user/Backend/app.py
+ExecStart=/usr/local/bin/flask run -h 0.0.0.0 -p 65535
+Restart=always
+            
+[Install]
+WantedBy=multi-user.target
