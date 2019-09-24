@@ -18,11 +18,14 @@ pip3 install flask-cors
 pip3 install psutil
 yum install tcpdump -y
 
+yum install firewalld -y
+systemctl start firewalld
 firewall-cmd --permanent --add-port=65535/tcp
 firewall-cmd --permanent --add-port=443/tcp
 firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --permanent --add-port=22/tcp
 firewall-cmd --reload
+systemctl enable firewalld
 
 systemctl daemon-reload
 systemctl start flaskapp.service
