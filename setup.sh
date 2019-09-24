@@ -19,6 +19,9 @@ pip3 install psutil
 yum install tcpdump -y
 
 firewall-cmd --permanent --add-port=65535/tcp
+firewall-cmd --permanent --add-port=443/tcp
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=22/tcp
 firewall-cmd --reload
 
 systemctl daemon-reload
