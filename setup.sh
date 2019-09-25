@@ -74,6 +74,12 @@ restorecon -v /var/www/$hostname/html/
 restorecon -v /var/www/$hostname/html/index.html
 restorecon -v /var/www/$hostname/html/LA_Logo.png
 
+touch var/www/$hostname/log/error.log
+touch /var/www/$hostname/log/requests.log
+
+chown cloud_user:cloud_user /var/www/$hostname/log/requests.log
+chown cloud_user:cloud_user /www/$hostname/log/error.log
+
 semanage fcontext -a -t httpd_log_t /var/www/$hostname/log
 semanage fcontext -a -t httpd_log_t /var/www/$hostname/log/error.log
 semanage fcontext -a -t httpd_log_t /var/www/$hostname/log/requests.log
