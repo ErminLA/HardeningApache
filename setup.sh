@@ -100,3 +100,5 @@ echo "MaxClient 150" >> /etc/httpd/conf/httpd.conf
 echo "FileETag None" >> /etc/httpd/conf/httpd.conf
 echo "ServerSignature Off" >> /etc/httpd/conf/httpd.conf
 echo "ServerTokens Prod" >> /etc/httpd/conf/httpd.conf
+
+systemctl restart httpd
